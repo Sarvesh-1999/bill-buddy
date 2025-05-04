@@ -29,7 +29,7 @@ const Login = () => {
       );
       console.log(resp);
       toast.success("Welcome");
-      // navigate("/userdashboard");
+      navigate("/userdashboard");
     } catch (error) {
       console.log(error);
     }

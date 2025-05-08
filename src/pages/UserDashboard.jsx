@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 
 const UserDashboard = () => {
@@ -5,18 +6,29 @@ const UserDashboard = () => {
   const [friends, setFriends] = useState([]);
   const [showCreateGroup, setShowCreateGroup] = useState(false);
   const [newGroup, setNewGroup] = useState({
-    name: "",
-    description: "",
+    roomName: "",
   });
 
-  const handleCreateGroup = (e) => {
+  const handleCreateGroup = async (e) => {
     e.preventDefault();
-    if (newGroup.name.trim()) {
+    if (newGroup.roomName.trim()) {
+      try {
+        let resp = await axios.post(
+          "http://localhost:8182/roomMates/createRoom",newGroup
+        );
+        console.log(resp);
+      } catch (error) {
+        console.log(error);
+        console.log("error while creating new group");
+      }
+
       setGroups([...groups, { ...newGroup, id: Date.now(), members: [] }]);
-      setNewGroup({ name: "", description: "" });
+      setNewGroup({ roomName: "" });
       setShowCreateGroup(false);
     }
   };
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-500 to-pink-500 p-8">
@@ -52,7 +64,7 @@ const UserDashboard = () => {
                       className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all duration-300"
                     >
                       <h3 className="text-xl font-semibold text-gray-800">
-                        {group.name}
+                        {group.roomName}
                       </h3>
                       <p className="text-gray-600 mt-1">{group.description}</p>
                       <div className="mt-4 flex justify-between items-center">
@@ -128,33 +140,14 @@ const UserDashboard = () => {
                 <input
                   type="text"
                   id="groupName"
-                  value={newGroup.name}
-                  onChange={(e) =>
-                    setNewGroup({ ...newGroup, name: e.target.value })
-                  }
+                  value={newGroup.roomName}
+                  onChange={(e) => setNewGroup({ roomName: e.target.value })}
                   className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                   placeholder="Enter group name"
                   required
                 />
               </div>
-              <div>
-                <label
-                  htmlFor="groupDescription"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Description
-                </label>
-                <textarea
-                  id="groupDescription"
-                  value={newGroup.description}
-                  onChange={(e) =>
-                    setNewGroup({ ...newGroup, description: e.target.value })
-                  }
-                  className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder="Enter group description"
-                  rows="3"
-                />
-              </div>
+
               <div className="flex justify-end space-x-3">
                 <button
                   type="button"

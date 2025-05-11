@@ -75,7 +75,8 @@ const UserDashboard = () => {
     try {
       // TODO: Implement the API call to add item
       console.log("Adding item:", itemData);
-      let resp = await axios.post(`http://localhost:8182/items/addItems/${roomName}`)
+      let userName = sessionStorage.getItem("useremail")
+      let resp = await axios.post(`http://localhost:8182/items/addItems/${userName}/${roomName}`,itemData)
       toast.success(`${itemData.itemsName} Added`)
       setShowAddItem(false);
       setSelectedGroupForItem(null);

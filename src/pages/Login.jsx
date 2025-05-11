@@ -29,6 +29,7 @@ const Login = () => {
       );
       console.log(resp);
       toast.success("Welcome");
+      sessionStorage.setItem("useremail",resp.data.email)
       navigate("/userdashboard");
     } catch (error) {
       console.log(error);

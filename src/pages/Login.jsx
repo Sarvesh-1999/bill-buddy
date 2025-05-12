@@ -24,15 +24,20 @@ const Login = () => {
     // Handle form submission here
     console.log(formData);
     try {
-      let resp = await axios.get(
+      let { data } = await axios.get(
         `http://localhost:8182/user/loginUser/${formData.email}/${formData.password}`
       );
-      console.log(resp);
-      toast.success("Welcome");
-      sessionStorage.setItem("useremail",resp.data.email)
-      navigate("/userdashboard");
+      console.log(data);
+      if (data.message === "Login Success") {
+        toast.success("Welcome");
+        sessionStorage.setItem("useremail", data.userEmail);
+        navigate("/userdashboard");
+      }
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data);
+      if (error.response.data === "Invalid Credentials") {
+        toast.error("Invalid Credentials");
+      }
     }
   };
 

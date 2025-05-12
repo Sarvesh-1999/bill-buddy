@@ -23,7 +23,8 @@ const UserDashboard = () => {
 
   async function getAllGroups() {
     let { data } = await axios.get(
-      "http://localhost:8182/roomMates/getAllRoomDetails"
+      "http://localhost:8182/roomMates/getAllRoomDetails",
+      { withCredentials: true }
     );
     console.log(data);
     setGroups(data);
@@ -71,13 +72,16 @@ const UserDashboard = () => {
     }
   };
 
-  const handleAddItem = async (itemData,roomName) => {
+  const handleAddItem = async (itemData, roomName) => {
     try {
       // TODO: Implement the API call to add item
       console.log("Adding item:", itemData);
-      let userName = sessionStorage.getItem("useremail")
-      let resp = await axios.post(`http://localhost:8182/items/addItems/${userName}/${roomName}`,itemData)
-      toast.success(`${itemData.itemsName} Added`)
+      let userName = sessionStorage.getItem("useremail");
+      let resp = await axios.post(
+        `http://localhost:8182/items/addItems/${roomName}`,
+        itemData,{ withCredentials: true }
+      );
+      toast.success(`${itemData.itemsName} Added`);
       setShowAddItem(false);
       setSelectedGroupForItem(null);
     } catch (error) {

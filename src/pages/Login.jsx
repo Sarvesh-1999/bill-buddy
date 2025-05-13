@@ -30,7 +30,7 @@ const Login = () => {
       console.log(data);
       if (data.message === "Login Success") {
         toast.success("Welcome");
-        sessionStorage.setItem("useremail", data.userEmail);
+        sessionStorage.setItem("accesstoken", Date.now());
         navigate("/userdashboard");
       }
     } catch (error) {
@@ -83,6 +83,7 @@ const Login = () => {
               className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
               placeholder="Enter your password"
               required
+              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$"
             />
           </div>
 

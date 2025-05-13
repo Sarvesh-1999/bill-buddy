@@ -5,6 +5,7 @@ import CreateGroupModal from "../components/CreateGroupModal";
 import AddFriendModal from "../components/AddFriendModal";
 import AddItemModal from "../components/AddItemModal";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const UserDashboard = () => {
   const [groups, setGroups] = useState([]);
@@ -20,6 +21,8 @@ const UserDashboard = () => {
     userEmail: "",
     roomName: "",
   });
+
+  const navigate = useNavigate();
 
   async function getAllGroups() {
     let { data } = await axios.get(
@@ -41,7 +44,7 @@ const UserDashboard = () => {
       try {
         let resp = await axios.post(
           "http://localhost:8182/roomMates/createRoom",
-          newGroup
+          newGroup,{withCredentials:true}
         );
         console.log(resp);
         getAllGroups();
@@ -79,7 +82,8 @@ const UserDashboard = () => {
       let userName = sessionStorage.getItem("useremail");
       let resp = await axios.post(
         `http://localhost:8182/items/addItems/${roomName}`,
-        itemData,{ withCredentials: true }
+        itemData,
+        { withCredentials: true }
       );
       toast.success(`${itemData.itemsName} Added`);
       setShowAddItem(false);
@@ -89,18 +93,38 @@ const UserDashboard = () => {
     }
   };
 
+  const logoutuser = async () => {
+    try {
+      let resp = await axios.get("http://localhost:8182/user/userLogout",{withCredentials:true});
+      console.log(resp);
+      sessionStorage.removeItem("accesstoken")
+      toast.success("Logout success");
+      navigate("/login");
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wrong");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-500 to-pink-500 p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-white">Dashboard</h1>
-          <button
-            onClick={() => setShowCreateGroup(true)}
-            className="bg-white text-purple-600 px-6 py-2 rounded-lg font-semibold hover:bg-purple-50 transition-all duration-300 transform hover:scale-105"
-          >
-            Create Group
-          </button>
+          <div>
+            <button 
+            onClick={logoutuser}
+            className="bg-red-400 mr-2 text-white px-6 py-2 rounded-lg font-semibold hover:bg-red-500 transition-all duration-300 transform hover:scale-105">
+              Logout
+            </button>
+            <button
+              onClick={() => setShowCreateGroup(true)}
+              className="bg-white text-purple-600 px-6 py-2 rounded-lg font-semibold hover:bg-purple-50 transition-all duration-300 transform hover:scale-105"
+            >
+              Create Group
+            </button>
+          </div>
         </div>
 
         {/* Main Content */}
